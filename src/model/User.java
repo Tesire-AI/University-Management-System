@@ -6,17 +6,19 @@ public class User {
     private String lastName;
     private String email;
 
-    public User(String ID, String firstName, String lastName, String email) {
+    public User(String id, String firstName, String lastName, String email) {
         this.id = id;
         setfirstName( firstName);
         setlastName( lastName);
         setemail(email);
     }
     public String getid(){
+
         return id;
     }
 
     public String getfirstName() {
+
         return firstName;
     }
 
@@ -24,7 +26,7 @@ public class User {
         if(firstName == null || firstName.isBlank()){
             throw new IllegalArgumentException("Firstname cannot be empty");
         }
-        firstName = firstName.trim();
+        this.firstName = firstName.trim();
     }
 
     public String getlastName() {
@@ -35,10 +37,11 @@ public class User {
         if(lastName == null || lastName.isBlank()){
             throw new IllegalArgumentException("Lastname cannot be empty");
         }
-        lastName = lastName.trim();
+        this.lastName = lastName.trim();
     }
 
     public String getemail() {
+
         return email;
     }
 

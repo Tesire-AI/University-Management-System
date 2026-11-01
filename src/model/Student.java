@@ -1,9 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Student extends User {
 
@@ -21,22 +18,65 @@ public abstract class Student extends User {
 
     }
 
-    public abstract double calculateGPA(); // to calculate the gpa
-    public abstract boolean isEligibleToGraduate(); //to see if he is a graduate student already or not
-    public abstract void printDegreeProgress(); //to generate a report
-
     public List<Course> getEnrolledCourses(){
-        return enrolledCourses;
+        return Collections.unmodifiableList(enrolledCourses);
     }
     public Map<Course, Double> getCompletedCourses(){
-        return completedCourses;
+        return Collections.unmodifiableMap(completedCourses);
     }
+
+    public void addEnrolledCourse(Course course){
+        if(course== null){
+            throw new IllegalArgumentException("Course can't be empty");
+        }
+        if(completedCourses.containsKey(course)){
+            throw new IllegalArgumentException("This course was completed");
+        }
+        if(!enrolledCourses.contains(course)){
+            enrolledCourses.add(course);
+        }
+    }
+
+    public void removeEnrolledCourse(Course course){
+        enrolledCourses.remove(course);
+        }
+    public void addCompletedCourses(Course course, double marks){
+        if(course== null){
+            throw new IllegalArgumentException("Course can't be empty");
+        }
+        if(marks<0 || marks> 100){
+            throw new IllegalArgumentException("Marks should be between 0 and 100");
+        }
+            completedCourses.put(course,marks);
+            enrolledCourses.remove(course);
+        }
+
+    protected double marksToGradePoints(double marks) {
+        if (marks >= 90) return 4.0;
+        if (marks >= 80) return 3.0;
+        if (marks >= 70) return 2.0;
+        if (marks >= 60) return 1.0;
+        return 0.0;
+    }
+
+    public int getTotalCreditsEarned() {
+        int total = 0;
+        for (Course course : completedCourses.keySet()) {
+            total += course.getCredits();
+        }
+        return total;
+    }
+
+    public abstract double calculateGPA(); // to calculate the gpa
+    public abstract boolean isEligibleToGraduate(); //to see if he is a graduate student already or not
+
 
     @Override
     public String toString() {
+
         return "Student{" +
-                "enrolledCourses=" + enrolledCourses +
-                ", completedCourses=" + completedCourses +
+                "enrolled Courses=" + enrolledCourses +
+                ", completed Courses=" + completedCourses +
                 '}';
     }
 }

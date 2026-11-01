@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 public class UndergraduateStudent extends Student{
 
 
@@ -8,19 +10,38 @@ public class UndergraduateStudent extends Student{
     public UndergraduateStudent(String ID, String firstName, String lastName, String email) {
         super(ID, firstName, lastName, email);
     }
+    private static final int requiredCredits = 120;
+    private static final double minPassMark = 60;
 
     @Override
     public double calculateGPA() {
-        return 0;
+        double totalGPA=0;
+        int totalCredits=0;
+
+        for(Map.Entry<Course,Double> entry: getCompletedCourses().entrySet()){
+            Course course= entry.getKey();
+            Double marks= entry.getValue();
+
+            totalGPA += marksToGradePoints(marks)* course.getCredits();
+            totalCredits += course.getCredits();
+        }
+
+        if(totalCredits==0){
+            return 0.0;
+        }
+        return totalGPA/totalCredits;
     }
 
     @Override
     public boolean isEligibleToGraduate() {
-        return false;
+        return getTotalCreditsEarned() >= requiredCredits;
     }
 
     @Override
-    public void printDegreeProgress() {
-
+    public String toString() {
+        return "UndergraduateStudent{" +
+                super.toString()+
+                "credits=" + credits +
+                '}';
     }
 }
