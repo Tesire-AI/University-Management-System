@@ -39,7 +39,8 @@ public abstract class Student extends User {
 
     public void removeEnrolledCourse(Course course){
         enrolledCourses.remove(course);
-        }
+    }
+
     public void addCompletedCourses(Course course, double marks){
         if(course== null){
             throw new IllegalArgumentException("Course can't be empty");
@@ -47,9 +48,9 @@ public abstract class Student extends User {
         if(marks<0 || marks> 100){
             throw new IllegalArgumentException("Marks should be between 0 and 100");
         }
-            completedCourses.put(course,marks);
-            enrolledCourses.remove(course);
-        }
+        completedCourses.put(course,marks);
+        enrolledCourses.remove(course);
+    }
 
     protected double marksToGradePoints(double marks) {
         if (marks >= 90) return 4.0;
@@ -59,16 +60,7 @@ public abstract class Student extends User {
         return 0.0;
     }
 
-    public int getTotalCreditsEarned() {
-        int total = 0;
-        for (Course course : completedCourses.keySet()) {
-            total += course.getCredits();
-        }
-        return total;
-    }
-
     public abstract double calculateGPA(); // to calculate the gpa
-    public abstract boolean isEligibleToGraduate(); //to see if he is a graduate student already or not
 
 
     @Override

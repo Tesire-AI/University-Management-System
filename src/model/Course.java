@@ -11,19 +11,18 @@ public class Course {
     private String title;
     private int credits;
     private int maxCapacity;
-    Instructor instructor;
+    private Instructor instructor;
 
     private Set<Student> roster;
 
     public Course(String courseCode, String title, int credits, int maxCapacity, Instructor instructor) {
-
-        // FIX: setters are used so the validation runs
+        // the setters run the validation
         setCourseCode(courseCode);
         setTitle(title);
         setCredits(credits);
         setMaxCapacity(maxCapacity);
-        this.instructor = instructor;   // FIX: was never assigned (null is allowed, assign one later)
-        this.roster= new LinkedHashSet<>();
+        this.instructor = instructor;   // can be null, assigned later
+        this.roster = new LinkedHashSet<>();
     }
 
     public String getCourseCode() {
@@ -31,7 +30,7 @@ public class Course {
     }
 
     public void setCourseCode(String courseCode) {
-        if(courseCode == null || courseCode.isBlank()){
+        if (courseCode == null || courseCode.isBlank()) {
             throw new IllegalArgumentException("CourseCode cannot be empty");
         }
         this.courseCode = courseCode.trim();
@@ -42,7 +41,7 @@ public class Course {
     }
 
     public void setTitle(String title) {
-        if(title == null || title.isBlank()){
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("title cannot be empty");
         }
         this.title = title.trim();
@@ -52,9 +51,8 @@ public class Course {
         return credits;
     }
 
-    // FIX: the throw now only runs when the value is invalid
     public void setCredits(int credits) {
-        if(credits <= 0){
+        if (credits <= 0) {
             throw new IllegalArgumentException("Credits can't be less or equal to zero");
         }
         this.credits = credits;
@@ -64,7 +62,6 @@ public class Course {
         return maxCapacity;
     }
 
-    // FIX: same correction as setCredits
     public void setMaxCapacity(int maxCapacity) {
         if (maxCapacity <= 0) {
             throw new IllegalArgumentException("max capacity should not be less or equal to zero");
@@ -77,7 +74,7 @@ public class Course {
     }
 
     public void setInstructor(Instructor instructor) {
-        if(instructor== null){
+        if (instructor == null) {
             throw new IllegalArgumentException("instructor can't be null");
         }
         this.instructor = instructor;
@@ -87,21 +84,20 @@ public class Course {
         return Collections.unmodifiableSet(roster);
     }
 
-    // FIX: renamed from isfull() so it matches the call in Enrollment
-    public boolean isFull(){
-        return roster.size()>= maxCapacity;
+    public boolean isFull() {
+        return roster.size() >= maxCapacity;
     }
 
-    // FIX: package-private (no public/private), so only Enrollment can change the roster
-    void addToRoster(Student student){
+    // no public/private: only classes in the model package (Enrollment) can change the roster
+    void addToRoster(Student student) {
         roster.add(student);
     }
 
-    void removeFromRoster(Student student){
+    void removeFromRoster(Student student) {
         roster.remove(student);
     }
 
-    // FIX: two courses are the same if they have the same course code
+    // two courses are the same if they have the same course code
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -122,7 +118,6 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", credits=" + credits +
                 ", maxCapacity=" + maxCapacity +
-                ", instructor=" + instructor +
                 '}';
     }
 }

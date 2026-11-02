@@ -4,7 +4,7 @@ public class Enrollment {
 
     private Student student;
     private Course course;
-    private Double grade;
+    private Double grade;   // null until the course is graded
 
     public Enrollment(Student student, Course course) {
         if (student == null) {
@@ -36,11 +36,11 @@ public class Enrollment {
 
     // all enrollment rules:
     public void enroll() {
-        if (course.getRoster().contains(student)) {
-            throw new IllegalArgumentException("Student is already enrolled in " + course.getCourseCode());
-        }
         if (student.getCompletedCourses().containsKey(course)) {
             throw new IllegalArgumentException("Student has already completed " + course.getCourseCode());
+        }
+        if (course.getRoster().contains(student)) {
+            throw new IllegalArgumentException("Student is already enrolled in " + course.getCourseCode());
         }
         if (course.isFull()) {
             throw new IllegalStateException("Course " + course.getCourseCode() + " is full");
@@ -66,12 +66,11 @@ public class Enrollment {
         }
         this.grade = marks;
         student.addCompletedCourses(course, marks);
-
     }
 
     @Override
     public String toString() {
-        return "Enrollment{student=" + student.getemail()+
+        return "Enrollment{student=" + student.getemail() +
                 ", course=" + course.getCourseCode() +
                 ", grade=" + (grade == null ? "not graded yet" : grade) + '}';
     }
