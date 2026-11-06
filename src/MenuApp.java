@@ -1,154 +1,113 @@
-import dao.*;
-import model.*;
+import DAO.*;
 
-import java.sql.SQLException;
-import java.util.List;
+import model.Course;
+import model.Enrollment;
+import model.UndergraduateStudent;
+import model.Student;
+
 import java.util.Scanner;
 
 public class MenuApp {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        StudentDaoImpl studentDAO = new StudentDaoImpl();
+        CourseDaoImpl courseDAO= new CourseDaoImpl();
+        EnrollmentDaoImpl enrollmentDAO= new EnrollmentDaoImpl();
 
-        StudentDAO studentDAO = new StudentDAO();
-        CourseDAO courseDAO = new CourseDAO();
-        EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
 
-        boolean running = true;
-
-        while (running) {
-            System.out.println();
-            System.out.println("===== UNIVERSITY MANAGEMENT =====");
-            System.out.println("1. Add student");
-            System.out.println("2. View all students");
-            System.out.println("3. Delete student");
-            System.out.println("4. Add course");
-            System.out.println("5. View all courses");
-            System.out.println("6. Delete course");
-            System.out.println("7. Enroll student in course");
-            System.out.println("8. View students with their courses");
-            System.out.println("9. Update a grade");
-            System.out.println("0. Exit");
+        while (true) {
+            System.out.println("\n--- UNIVERSITY MANAGEMENT SYSTEM ---");
+            System.out.println("1. Add a new Student");
+            System.out.println("2. View all Students");
+            System.out.println("3. Delete a Student");
+            System.out.println("4. Add a new Course");
+            System.out.println("5. View all Courses");
+            System.out.println("6. Enroll a Student in a Course");
+            System.out.println("7. View all Enrollments");
+            System.out.println("8. Exit");
             System.out.print("Choose an option: ");
 
-            String choice = scanner.nextLine();
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
-            try {
-                if (choice.equals("1")) {
-                    System.out.print("Student ID: ");
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Student ID: ");
                     String id = scanner.nextLine();
-                    System.out.print("First name: ");
-                    String firstName = scanner.nextLine();
-                    System.out.print("Last name: ");
-                    String lastName = scanner.nextLine();
-                    System.out.print("Email: ");
+                    System.out.print("Enter First Name: ");
+                    String fname = scanner.nextLine();
+                    System.out.print("Enter Last Name: ");
+                    String lname = scanner.nextLine();
+                    System.out.print("Enter Email: ");
                     String email = scanner.nextLine();
-                    System.out.print("Type (1 = Undergraduate, 2 = Graduate): ");
-                    String type = scanner.nextLine();
 
-                    Student student;
-                    if (type.equals("2")) {
-                        student = new GraduateStudent(id, firstName, lastName, email);
-                    } else {
-                        student = new UndergraduateStudent(id, firstName, lastName, email);
+
+                    Student newStudent = new UndergraduateStudent(id, fname, lname, email, "Undergraduate", new double[]{});
+                    studentDAO.addStudent(newStudent, "Undergraduate");
+                    break;
+                case 2:
+                    System.out.println("\n--- List of Students ---");
+                    for (Student s : studentDAO.getAllStudents()) {
+                        System.out.println(s.getid() + " -- " + s.getfirstName() + " " + s.getlastName() + " -- " + s.getemail());
                     }
-                    studentDAO.insert(student);
-                    System.out.println("Student added.");
+                    break;
+                case 3:
+                    System.out.print("Enter Student ID to delete: ");
+                    String deleteId = scanner.nextLine();
+                    studentDAO.removeStudent(deleteId);
+                    break;
 
-                } else if (choice.equals("2")) {
-                    List<Student> students = studentDAO.findAll();
-                    if (students.isEmpty()) {
-                        System.out.println("No students found.");
-                    }
-                    for (Student s : students) {
-                        System.out.println(s.getid() + " - " + s.getemail());
-                    }
-
-                } else if (choice.equals("3")) {
-                    System.out.print("Student ID to delete: ");
-                    String id = scanner.nextLine();
-                    studentDAO.delete(id);
-                    System.out.println("Done (if the student existed, it was deleted).");
-
-                } else if (choice.equals("4")) {
-                    System.out.print("Course code: ");
-                    String code = scanner.nextLine();
-                    System.out.print("Title: ");
-                    String title = scanner.nextLine();
-                    System.out.print("Credits: ");
-                    int credits = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Capacity: ");
-                    int capacity = Integer.parseInt(scanner.nextLine());
-
-                    Course course = new Course(code, title, credits, capacity, null);
-                    courseDAO.insert(course);
-                    System.out.println("Course added.");
-
-                } else if (choice.equals("5")) {
-                    List<Course> courses = courseDAO.findAll();
-                    if (courses.isEmpty()) {
-                        System.out.println("No courses found.");
-                    }
-                    for (Course c : courses) {
-                        System.out.println(c.getCourseCode() + " - " + c.getTitle()
-                                + " (" + c.getCredits() + " credits)");
-                    }
-
-                } else if (choice.equals("6")) {
-                    System.out.print("Course code to delete: ");
-                    String code = scanner.nextLine();
-                    courseDAO.delete(code);
-                    System.out.println("Done (if the course existed, it was deleted).");
-
-                } else if (choice.equals("7")) {
-                    System.out.print("Student ID: ");
-                    String studentId = scanner.nextLine();
-                    System.out.print("Course code: ");
+                case 4:
+                    System.out.print("Enter Course Code (e.g., CS101): ");
                     String courseCode = scanner.nextLine();
-                    enrollmentDAO.enroll(studentId, courseCode);
-                    System.out.println("Student enrolled.");
+                    System.out.print("Enter Course Name: ");
+                    String courseName = scanner.nextLine();
 
-                } else if (choice.equals("8")) {
-                    List<String> rows = enrollmentDAO.findStudentsWithCourses();
-                    if (rows.isEmpty()) {
-                        System.out.println("No enrollments found.");
+                    Course newCourse = new Course(courseCode, courseName);
+                    courseDAO.addCourse(newCourse);
+                    break;
+
+                case 5:
+                    System.out.println("\n--- List of Courses ---");
+                    for (Course c : courseDAO.getAllCourses()) {
+                        System.out.println(c.getCourseCode() + " | " + c.getCourseName());
                     }
-                    for (String row : rows) {
-                        System.out.println(row);
-                    }
+                    break;
 
-                } else if (choice.equals("9")) {
-                    System.out.print("Student ID: ");
-                    String studentId = scanner.nextLine();
-                    System.out.print("Course code: ");
-                    String courseCode = scanner.nextLine();
-                    System.out.print("Grade (0 - 100): ");
-                    double grade = Double.parseDouble(scanner.nextLine());
+                case 6:
+                    System.out.print("Enter Student ID: ");
+                    String enrollStudentId = scanner.nextLine();
+                    System.out.print("Enter Course Code: ");
+                    String enrollCourseCode = scanner.nextLine();
 
-                    if (grade < 0 || grade > 100) {
-                        System.out.println("Grade must be between 0 and 100.");
+
+                    Student studentToEnroll = studentDAO.getStudentById(enrollStudentId);
+                    Course courseToEnroll = courseDAO.getCourseByCode(enrollCourseCode);
+
+                    if (studentToEnroll != null && courseToEnroll != null) {
+
+                        Enrollment newEnrollment = new Enrollment(studentToEnroll, courseToEnroll, "2023-11-01");
+                        enrollmentDAO.addEnrollment(newEnrollment);
                     } else {
-                        enrollmentDAO.updateGrade(studentId, courseCode, grade);
-                        System.out.println("Grade updated.");
+                        System.out.println("Error: Student or Course not found in the database!");
                     }
+                    break;
 
-                } else if (choice.equals("0")) {
-                    System.out.println("Goodbye!");
-                    running = false;
+                case 7:
+                    System.out.println("\n--- List of Enrollments ---");
+                    for (Enrollment e : enrollmentDAO.getAllEnrollments()) {
 
-                } else {
-                    System.out.println("Invalid option. Please choose from the menu.");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number.");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid input: " + e.getMessage());
-            } catch (SQLException e) {
-                System.out.println("Database error: " + e.getMessage());
+                        System.out.println("Student ID: " + e.getStudent().getid() +
+                                " enrolled in Course: " + e.getCourse().getCourseCode() +
+                                " on " + e.getEnrollmentDate());
+                    }
+                    break;
+                    case 8:
+                    System.out.println("Exiting... Goodbye!");
+                    scanner.close();
+                default:
+                    System.out.println("Invalid option. Try again.");
             }
         }
-
-        scanner.close();
     }
 }
