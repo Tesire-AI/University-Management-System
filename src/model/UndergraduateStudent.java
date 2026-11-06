@@ -1,35 +1,18 @@
 package model;
 
-import java.util.Map;
-
 public class UndergraduateStudent extends Student {
+    private double[] grades;
 
-    public UndergraduateStudent(String ID, String firstName, String lastName, String email) {
-        super(ID, firstName, lastName, email);
+    public UndergraduateStudent(String id, String firstname,String lastname, String email,String type, double[] grades) {
+        super(id, firstname,lastname, email, type);
+        this.grades = grades;
     }
 
-    // undergraduate rule: every mark counts, with no minimum pass mark
     @Override
     public double calculateGPA() {
-        double totalPoints = 0;
-        int totalCredits = 0;
 
-        for (Map.Entry<Course, Double> entry : getCompletedCourses().entrySet()) {
-            Course course = entry.getKey();
-            double marks = entry.getValue();
-
-            totalPoints += marksToGradePoints(marks) * course.getCredits();
-            totalCredits += course.getCredits();
-        }
-
-        if (totalCredits == 0) {
-            return 0.0;
-        }
-        return totalPoints / totalCredits;
-    }
-
-    @Override
-    public String toString() {
-        return "UndergraduateStudent{" + super.toString() + '}';
+        double sum = 0;
+        for (double g : grades) sum += g;
+        return sum / grades.length;
     }
 }

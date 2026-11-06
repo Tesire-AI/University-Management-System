@@ -9,6 +9,7 @@ public class User {
     public User(String id, String firstName, String lastName, String email) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("ID cannot be empty");
+
         }
         this.id = id;
         setfirstName( firstName);
@@ -16,12 +17,10 @@ public class User {
         setemail(email);
     }
     public String getid(){
-
         return id;
     }
 
     public String getfirstName() {
-
         return firstName;
     }
 
@@ -40,6 +39,7 @@ public class User {
         if(lastName == null || lastName.isBlank()){
             throw new IllegalArgumentException("Lastname cannot be empty");
         }
+
         this.lastName = lastName.trim();
     }
 
