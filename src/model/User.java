@@ -6,6 +6,7 @@ public class User {
     private String lastName;
     private String email;
 
+
     public User(String id, String firstName, String lastName, String email) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("ID cannot be empty");
